@@ -1,0 +1,65 @@
+{
+    "10143": {
+        "allowedManager": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "feeManager": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "emergencyCouncil": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "team": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "vetoer": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "WETH": "0x760afe86e5de5fa0ee542fc7b7b713e1c5425701",
+        "whitelistTokens": [
+            "0x88b8E2161DEDC77EF4ab7585569D2415a1C1055D",
+            "0x760afe86e5de5fa0ee542fc7b7b713e1c5425701",
+            "0xf817257fed379853cDe0fa4F97AB987181B1E5Ea",
+            "0xB5a30b0FDc5EA94A52fDc42e3E9760Cb8449Fb37"
+        ],
+        "poolsV2": [
+            {
+                "stable": true,
+                "tokenA": "0x3E29D3A9316dAB217754d13b28646B76607c5f04",
+                "tokenB": "0x6806411765Af15Bddd26f8f544A34cC40cb9838B"
+            },
+            {
+                "stable": false,
+                "tokenA": "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb",
+                "tokenB": "0xFdb794692724153d1488CcdBE0C56c252596735F"
+            },
+            {
+                "stable": false,
+                "tokenA": "0x340fE1D898ECCAad394e2ba0fC1F93d27c7b717A",
+                "tokenB": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"
+            },
+            {
+                "stable": true,
+                "tokenA": "0xc40F949F8a4e094D1b49a23ea9241D289B7b2819",
+                "tokenB": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"
+            },
+            {
+                "stable": true,
+                "tokenA": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+                "tokenB": "0xc5b001DC33727F8F26880B184090D3E252470D45"
+            }
+        ],
+        "poolsCEDAV2": [
+            {
+                "stable": true,
+                "tokenB": "0x46f21fDa29F1339e0aB543763FF683D399e393eC"
+            },
+            {
+                "stable": false,
+                "tokenA": "0x3417E54A51924C225330f8770514aD5560B9098D"
+            },
+            {
+                "stable": false,
+                "tokenB": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"
+            },
+            {
+                "stable": false,
+                "tokenB": "0x7aE97042a4A0eB4D1eB370C34BfEC71042a056B7"
+            },
+            {
+                "stable": false,
+                "token": "0x4200000000000000000000000000000000000006"
+            }
+        ]
+      }
+}
