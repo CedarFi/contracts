@@ -106,13 +106,13 @@ abstract contract BaseTest is Base, TestOwner {
         amounts[2] = TOKEN_10M;
         amounts[3] = TOKEN_10M;
         amounts[4] = TOKEN_10M;
-        mintToken(address(VELO), owners, amounts);
+        mintToken(address(CEDA), owners, amounts);
         mintToken(address(LR), owners, amounts);
 
         tokens.push(address(USDC));
         tokens.push(address(FRAX));
         tokens.push(address(DAI));
-        tokens.push(address(VELO));
+        tokens.push(address(CEDA));
         tokens.push(address(LR));
         tokens.push(address(WETH));
 
@@ -121,7 +121,7 @@ abstract contract BaseTest is Base, TestOwner {
 
     function _testSetupAfter() public {
         // Setup governors
-        governor = new VeloGovernor(escrow, IVoter(voter));
+        governor = new CEDAGovernor(escrow, IVoter(voter));
         epochGovernor = new EpochGovernor(address(forwarder), escrow, address(minter), IVoter(voter));
         voter.setEpochGovernor(address(epochGovernor));
         voter.setGovernor(address(governor));
@@ -227,7 +227,7 @@ abstract contract BaseTest is Base, TestOwner {
             WETH = IWETH(new MockWETH());
             FRAX = new MockERC20("FRAX", "FRAX", 18);
         }
-        VELO = new Velo();
+        CEDA = new CEDA();
         LR = new MockERC20("LR", "LR", 18);
     }
 
@@ -298,11 +298,11 @@ abstract contract BaseTest is Base, TestOwner {
 
     /// @dev Helper function to add rewards to gauge from voter
     function _addRewardToGauge(address _voter, address _gauge, uint256 _amount) internal {
-        deal(address(VELO), _voter, _amount);
+        deal(address(CEDA), _voter, _amount);
         vm.startPrank(_voter);
         // do not overwrite approvals if already set
-        if (VELO.allowance(_voter, _gauge) < _amount) {
-            VELO.approve(_gauge, _amount);
+        if (CEDA.allowance(_voter, _gauge) < _amount) {
+            CEDA.approve(_gauge, _amount);
         }
         Gauge(_gauge).notifyRewardAmount(_amount);
         vm.stopPrank();

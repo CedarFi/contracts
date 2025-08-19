@@ -4,16 +4,16 @@ pragma solidity 0.8.19;
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {IMinter} from "./interfaces/IMinter.sol";
 import {IRewardsDistributor} from "./interfaces/IRewardsDistributor.sol";
-import {IRCT} from "./interfaces/IRCT.sol";
+import {ICEDA} from "./interfaces/ICEDA.sol";
 import {IVoter} from "./interfaces/IVoter.sol";
 import {IVotingEscrow} from "./interfaces/IVotingEscrow.sol";
 import {IEpochGovernor} from "./interfaces/IEpochGovernor.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract Minter is IMinter {
-    using SafeERC20 for IRCT;
+    using SafeERC20 for ICEDA;
     /// @inheritdoc IMinter
-    IRCT public immutable rct;
+    ICEDA public immutable ceda;
     /// @inheritdoc IMinter
     IVoter public immutable voter;
     /// @inheritdoc IMinter
@@ -57,7 +57,7 @@ contract Minter is IMinter {
         address _ve, // the ve(3,3) system that will be locked into
         address _rewardsDistributor // the distribution system that ensures users aren't diluted
     ) {
-        rct = IRCT(IVotingEscrow(_ve).token());
+        ceda = ICEDA(IVotingEscrow(_ve).token());
         voter = IVoter(_voter);
         ve = IVotingEscrow(_ve);
         team = msg.sender;
@@ -90,8 +90,8 @@ contract Minter is IMinter {
     /// @inheritdoc IMinter
     function calculateGrowth(uint256 _minted) public view returns (uint256 _growth) {
         uint256 _veTotal = ve.totalSupplyAt(activePeriod - 1);
-        uint256 _rctTotal = rct.totalSupply();
-        return (((((_minted * _veTotal) / _rctTotal) * _veTotal) / _rctTotal) * _veTotal) / _rctTotal / 2;
+        uint256 _cedaTotal = ceda.totalSupply();
+        return (((((_minted * _veTotal) / _cedaTotal) * _veTotal) / _cedaTotal) * _veTotal) / _cedaTotal / 2;
     }
 
     /// @inheritdoc IMinter
@@ -125,7 +125,7 @@ contract Minter is IMinter {
             activePeriod = _period;
             uint256 _weekly = weekly;
             uint256 _emission;
-            uint256 _totalSupply = rct.totalSupply();
+            uint256 _totalSupply = ceda.totalSupply();
             bool _tail = _weekly < TAIL_START;
 
             if (_tail) {
@@ -142,19 +142,19 @@ contract Minter is IMinter {
             uint256 _teamEmissions = (_rate * (_growth + _emission)) / (MAX_BPS);
 
             uint256 _required = _growth + _emission + _teamEmissions;
-            uint256 _balanceOf = rct.balanceOf(address(this));
+            uint256 _balanceOf = ceda.balanceOf(address(this));
             if (_balanceOf < _required) {
-                rct.mint(address(this), _required - _balanceOf);
+                ceda.mint(address(this), _required - _balanceOf);
             }
 
-            rct.safeTransfer(address(team), _teamEmissions);
-            rct.safeTransfer(address(rewardsDistributor), _growth);
+            ceda.safeTransfer(address(team), _teamEmissions);
+            ceda.safeTransfer(address(rewardsDistributor), _growth);
             rewardsDistributor.checkpointToken(); // checkpoint token balance that was just minted in rewards distributor
 
-            rct.safeApprove(address(voter), _emission);
+            ceda.safeApprove(address(voter), _emission);
             voter.notifyRewardAmount(_emission);
 
-            emit Mint(msg.sender, _emission, rct.totalSupply(), _tail);
+            emit Mint(msg.sender, _emission, ceda.totalSupply(), _tail);
         }
     }
 }

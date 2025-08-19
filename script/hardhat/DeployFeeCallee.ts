@@ -3,7 +3,7 @@ import { createWriteStream, existsSync, readFileSync } from "fs";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 import { network } from "hardhat";
-import { ReactorFeeCallee } from "../../artifacts/types";
+import { CedarFeeCallee } from "../../artifacts/types";
 import Values from "../constants/values.json";
 
 interface CoreOutput {
@@ -19,8 +19,8 @@ async function main() {
   const outputFile = join(process.cwd(), outputDirectory, `CalleeOutput-${String(networkId)}.txt`);
   const outputBuffer = readFileSync(coreOutput);
   const output: CoreOutput = JSON.parse(outputBuffer.toString());
-  const callee = await deploy<ReactorFeeCallee>(
-    "ReactorFeeCallee",
+  const callee = await deploy<CedarFeeCallee>(
+    "CedarFeeCallee",
     undefined,
     CONSTANTS.team,
     CONSTANTS.team,

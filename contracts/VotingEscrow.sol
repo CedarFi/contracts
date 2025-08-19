@@ -66,7 +66,7 @@ contract VotingEscrow is IVotingEscrow, ERC2771Context, ReentrancyGuard {
     uint256 public tokenId;
 
     /// @param _forwarder address of trusted forwarder
-    /// @param _token `VELO` token address
+    /// @param _token `CEDA` token address
     /// @param _factoryRegistry Factory Registry address
     constructor(address _forwarder, address _token, address _factoryRegistry) ERC2771Context(_forwarder) {
         forwarder = _forwarder;

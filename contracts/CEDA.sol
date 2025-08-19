@@ -1,14 +1,14 @@
 pragma solidity 0.8.19;
 
-import {IRCT} from "./interfaces/IRCT.sol";
+import {ICEDA} from "./interfaces/ICEDA.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
-contract RCT is IRCT, ERC20Permit {
+contract CEDA is ICEDA, ERC20Permit {
     address public minter;
     address private owner;
 
-    constructor() ERC20("Reactor", "RCT") ERC20Permit("Reactor") {
+    constructor() ERC20("Cedar", "CEDA") ERC20Permit("Cedar") {
         minter = msg.sender;
         owner = msg.sender;
     }

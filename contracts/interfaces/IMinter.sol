@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IRCT} from "./IRCT.sol";
+import {ICEDA} from "./ICEDA.sol";
 import {IVoter} from "./IVoter.sol";
 import {IVotingEscrow} from "./IVotingEscrow.sol";
 import {IRewardsDistributor} from "./IRewardsDistributor.sol";
@@ -19,8 +19,8 @@ interface IMinter {
     event Nudge(uint256 indexed _period, uint256 _oldRate, uint256 _newRate);
     event AcceptTeam(address indexed _newTeam);
 
-    /// @notice Interface of IRCT.sol
-    function rct() external view returns (IRCT);
+    /// @notice Interface of ICEDA.sol
+    function ceda() external view returns (ICEDA);
 
     /// @notice Interface of Voter.sol
     function voter() external view returns (IVoter);
@@ -61,7 +61,7 @@ interface IMinter {
     /// @notice Tail emissions rate in basis points
     function tailEmissionRate() external view returns (uint256);
 
-    /// @notice Starting weekly emission of 15M VELO (VELO has 18 decimals)
+    /// @notice Starting weekly emission of 15M CEDA (CEDA has 18 decimals)
     function weekly() external view returns (uint256);
 
     /// @notice Timestamp of start of epoch that updatePeriod was last called in
@@ -103,10 +103,10 @@ interface IMinter {
     function nudge() external;
 
     /// @notice Calculates rebases according to the formula
-    ///         weekly * (ve.totalSupply / velo.totalSupply) ^ 3 / 2
+    ///         weekly * (ve.totalSupply / CEDA.totalSupply) ^ 3 / 2
     ///         Note that ve.totalSupply is the locked ve supply
-    ///         velo.totalSupply is the total ve supply minted
-    /// @param _minted Amount of VELO minted this epoch
+    ///         CEDA.totalSupply is the total ve supply minted
+    /// @param _minted Amount of CEDA minted this epoch
     /// @return _growth Rebases
     function calculateGrowth(uint256 _minted) external view returns (uint256 _growth);
 

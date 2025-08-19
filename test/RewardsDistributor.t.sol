@@ -8,7 +8,7 @@ contract RewardsDistributorTest is BaseTest {
 
     function _setUp() public override {
         // timestamp: 604801
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         skip(1);
 
@@ -26,14 +26,14 @@ contract RewardsDistributorTest is BaseTest {
     function testInitialize() public {
         assertEq(distributor.startTime(), 604800);
         assertEq(distributor.lastTokenTime(), 604800);
-        assertEq(distributor.token(), address(VELO));
+        assertEq(distributor.token(), address(CEDA));
         assertEq(address(distributor.ve()), address(escrow));
     }
 
     function testClaim() public {
         skipToNextEpoch(1 days); // epoch 1, ts: 1296000, blk: 2
 
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, MAXTIME);
 
         IVotingEscrow.LockedBalance memory locked = escrow.locked(tokenId);
@@ -49,7 +49,7 @@ contract RewardsDistributorTest is BaseTest {
         assertEq(userPoint.blk, 2);
 
         vm.startPrank(address(owner2));
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId2 = escrow.createLock(TOKEN_1M, MAXTIME);
         vm.stopPrank();
 
@@ -102,7 +102,7 @@ contract RewardsDistributorTest is BaseTest {
     function testClaimWithPermanentLocks() public {
         skipToNextEpoch(1 days); // epoch 1, ts: 1296000, blk: 2
 
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, MAXTIME);
         escrow.lockPermanent(tokenId);
 
@@ -120,7 +120,7 @@ contract RewardsDistributorTest is BaseTest {
         assertEq(userPoint.permanent, TOKEN_1M);
 
         vm.startPrank(address(owner2));
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId2 = escrow.createLock(TOKEN_1M, MAXTIME);
         escrow.lockPermanent(tokenId2);
         vm.stopPrank();
@@ -175,12 +175,12 @@ contract RewardsDistributorTest is BaseTest {
     function testClaimWithBothLocks() public {
         skipToNextEpoch(1 days); // epoch 1, ts: 1296000, blk: 2
 
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, MAXTIME);
         escrow.lockPermanent(tokenId);
 
         vm.startPrank(address(owner2));
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId2 = escrow.createLock(TOKEN_1M, MAXTIME);
         vm.stopPrank();
 
@@ -224,9 +224,9 @@ contract RewardsDistributorTest is BaseTest {
             minter.updatePeriod();
         }
 
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, MAXTIME);
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId2 = escrow.createLock(TOKEN_1M, MAXTIME);
 
         skipToNextEpoch(0);
@@ -250,9 +250,9 @@ contract RewardsDistributorTest is BaseTest {
 
     function testClaimWithIncreaseAmountOnEpochFlip() public {
         skipToNextEpoch(1 days); // epoch 1
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, MAXTIME);
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId2 = escrow.createLock(TOKEN_1M, MAXTIME);
 
         skipToNextEpoch(0); // distribute epoch 1's rebases
@@ -264,7 +264,7 @@ contract RewardsDistributorTest is BaseTest {
         assertEq(distributor.claimable(tokenId), 117308174817358107217);
         assertEq(distributor.claimable(tokenId2), 117308174817358107217);
         // making lock larger on flip should not impact claimable
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         escrow.increaseAmount(tokenId, TOKEN_1M);
         minter.updatePeriod(); // epoch 1's rebases available
         assertEq(distributor.claimable(tokenId), 217977480018901655348);
@@ -272,9 +272,9 @@ contract RewardsDistributorTest is BaseTest {
     }
 
     function testClaimWithExpiredNFT() public {
-        // test reward claims to expired NFTs are distributed as unlocked VELO
+        // test reward claims to expired NFTs are distributed as unlocked CEDA
         // ts: 608402
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, WEEK * 4);
 
         skipToNextEpoch(1);
@@ -293,24 +293,24 @@ contract RewardsDistributorTest is BaseTest {
         assertGt(block.timestamp, locked.end); // lock expired
 
         uint256 rebase = distributor.claimable(tokenId);
-        uint256 pre = VELO.balanceOf(address(owner));
+        uint256 pre = CEDA.balanceOf(address(owner));
         vm.expectEmit(true, true, true, true, address(distributor));
         emit Claimed(tokenId, 604800, 3628800, 203113975373995);
         distributor.claim(tokenId);
-        uint256 post = VELO.balanceOf(address(owner));
+        uint256 post = CEDA.balanceOf(address(owner));
 
         locked = escrow.locked(tokenId); // update locked value post claim
 
-        assertEq(post - pre, rebase); // expired rebase distributed as unlocked VELO
+        assertEq(post - pre, rebase); // expired rebase distributed as unlocked CEDA
         assertEq(uint256(uint128(locked.amount)), TOKEN_1M); // expired nft locked balance unchanged
     }
 
     function testClaimManyWithExpiredNFT() public {
         // test claim many with one expired nft and one normal nft
         // ts: 608402
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, WEEK * 4);
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId2 = escrow.createLock(TOKEN_1M, MAXTIME);
 
         skipToNextEpoch(1);
@@ -337,21 +337,21 @@ contract RewardsDistributorTest is BaseTest {
         uint256 rebase = distributor.claimable(tokenId);
         uint256 rebase2 = distributor.claimable(tokenId2);
 
-        uint256 pre = VELO.balanceOf(address(owner));
+        uint256 pre = CEDA.balanceOf(address(owner));
         assertTrue(distributor.claimMany(tokenIds));
-        uint256 post = VELO.balanceOf(address(owner));
+        uint256 post = CEDA.balanceOf(address(owner));
 
         locked = escrow.locked(tokenId); // update locked value post claim
         IVotingEscrow.LockedBalance memory postLocked2 = escrow.locked(tokenId2);
 
-        assertEq(post - pre, rebase); // expired rebase distributed as unlocked VELO
+        assertEq(post - pre, rebase); // expired rebase distributed as unlocked CEDA
         assertEq(uint256(uint128(locked.amount)), TOKEN_1M); // expired nft locked balance unchanged
         assertEq(uint256(uint128(postLocked2.amount)) - uint256(uint128(locked.amount)), rebase2); // rebase accrued to normal nft
     }
 
     function testClaimRebaseWithManagedLocks() public {
         minter.updatePeriod(); // does nothing
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1M, MAXTIME);
         escrow.lockPermanent(tokenId);
         uint256 tokenId2 = escrow.createLock(TOKEN_1M, MAXTIME);
@@ -424,19 +424,19 @@ contract RewardsDistributorTest is BaseTest {
             assertEq(distributor.claimable(i), 0);
         }
 
-        assertLt(VELO.balanceOf(address(distributor)), 100); // dust
+        assertLt(CEDA.balanceOf(address(distributor)), 100); // dust
     }
 
     function testClaimRebaseWithDepositManaged() public {
         minter.updatePeriod(); // does nothing
         vm.startPrank(address(owner2));
-        VELO.approve(address(escrow), TOKEN_10M);
+        CEDA.approve(address(escrow), TOKEN_10M);
         uint256 tokenId = escrow.createLock(TOKEN_10M, MAXTIME);
         escrow.lockPermanent(tokenId);
         vm.stopPrank();
 
         vm.startPrank(address(owner3));
-        VELO.approve(address(escrow), TOKEN_10M);
+        CEDA.approve(address(escrow), TOKEN_10M);
         uint256 tokenId2 = escrow.createLock(TOKEN_10M, MAXTIME);
         escrow.lockPermanent(tokenId2);
         vm.stopPrank();
@@ -482,7 +482,7 @@ contract RewardsDistributorTest is BaseTest {
     }
 
     function testCannotClaimRebaseWithLockedNFT() public {
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, MAXTIME);
         escrow.lockPermanent(tokenId);
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
@@ -503,7 +503,7 @@ contract RewardsDistributorTest is BaseTest {
     }
 
     function testCannotClaimBeforeUpdatePeriod() public {
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1M, MAXTIME);
         uint256 tokenId2 = escrow.createLock(TOKEN_1M * 8, MAXTIME);
 
@@ -532,7 +532,7 @@ contract RewardsDistributorTest is BaseTest {
     function testClaimBeforeLockedEnd() public {
         uint256 duration = WEEK * 12;
         vm.startPrank(address(owner));
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, duration);
 
         skipToNextEpoch(1);
@@ -553,7 +553,7 @@ contract RewardsDistributorTest is BaseTest {
     function testClaimOnLockedEnd() public {
         uint256 duration = WEEK * 12;
         vm.startPrank(address(owner));
-        VELO.approve(address(escrow), TOKEN_1M);
+        CEDA.approve(address(escrow), TOKEN_1M);
         uint256 tokenId = escrow.createLock(TOKEN_1M, duration);
 
         skipToNextEpoch(1);
@@ -566,8 +566,8 @@ contract RewardsDistributorTest is BaseTest {
         minter.updatePeriod();
 
         // Rebase should deposit into veNFT one second before expiry
-        uint256 balanceBefore = VELO.balanceOf(address(owner));
+        uint256 balanceBefore = CEDA.balanceOf(address(owner));
         distributor.claim(tokenId);
-        assertGt(VELO.balanceOf(address(owner)), balanceBefore);
+        assertGt(CEDA.balanceOf(address(owner)), balanceBefore);
     }
 }

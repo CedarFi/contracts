@@ -4,18 +4,18 @@
 - Can swap tokens through the  DEX.
 - Can provide liquidity.
 - Can create a Normal veNFT.
-- Can deposit VELO into an existing Normal veNFT.
+- Can deposit CEDA into an existing Normal veNFT.
 - Can poke the balance of an existing veNFT to sync the balance.
 - Can bribe a  liquidity pool through its' linked BribeVotingRewards contract.
 - Can skim a stable or volatile liquidity pool to rebalance the reserves.
 - Can sync a liquidity pool to record historical price
-- Can trigger the emission of VELO at the start of an epoch
+- Can trigger the emission of CEDA at the start of an epoch
 - Can create a liquidity pool with two different ERC20 tokens if the pool is not already created
 - Can create a gauge for the liquidity pool if the gauge is not already created and the tokens are whitelisted
 
 ### Liquidity provider (LP)
 - Can deposit their LP token into the  gauge linked to the liquidity pool
-    - Earns VELO emissions
+    - Earns CEDA emissions
 
 ### veNFT Hodler
 - For a detailed breakdown refer to [VOTINGESCROW.md](https://github.com/-finance/contracts/blob/contracts-v2/VOTINGESCROW.md)
@@ -26,8 +26,8 @@
 - Can increase amount locked
 - Can vote weekly on pool(s)
     - Earns bribes and trading fees
-    - Earns weekly distribution of VELO rebases
-- Can vote on VeloGovernor proposals
+    - Earns weekly distribution of CEDA rebases
+- Can vote on CEDAGovernor proposals
 - Can vote on EpochGovernor proposals
 
 #### Normal veNFT
@@ -61,10 +61,10 @@ Multisig at [0x838352F4E3992187a33a04826273dB3992Ee2b3f](https://optimistic.ethe
 - TODO: Who owns every address?
 
 #### Vetoer
- team at deployment of VeloGovernor. At a later date, this role will be renounced.
+ team at deployment of CEDAGovernor. At a later date, this role will be renounced.
 
-#### VeloGovernor (aka. Governor)
-At first deployment, team. At a later date, this will be set to a lightly modified [Governor](https://docs.openzeppelin.com/contracts/4.x/api/governance#governor) contract from OpenZeppelin, [VeloGovernor](https://github.com/-finance/contracts/blob/contracts-v2/contracts/VeloGovernor.sol).  
+#### CEDAGovernor (aka. Governor)
+At first deployment, team. At a later date, this will be set to a lightly modified [Governor](https://docs.openzeppelin.com/contracts/4.x/api/governance#governor) contract from OpenZeppelin, [CEDAGovernor](https://github.com/-finance/contracts/blob/contracts-v2/contracts/CEDAGovernor.sol).  
 
 #### EpochGovernor
 At first deployment, team. Before the tail rate of emissions is reached, this will be set to [EpochGovernor](https://github.com/-finance/contracts/blob/contracts-v2/contracts/EpochGovernor.sol).
@@ -102,13 +102,13 @@ This is an exhaustive list of all admin permissions in  V2, sorted by the contra
     - Can accept itself as team in Minter (requires being set as pendingTeam by previous team)
     - Can set team rate in Minter
 - EpochGovernor
-    - Can nudge the Minter to adjust the VELO emissions rate.
+    - Can nudge the Minter to adjust the CEDA emissions rate.
 
-#### [VeloGovernor](TODO: live etherscan link)
+#### [CEDAGovernor](TODO: live etherscan link)
 - Team
     - Can set proposal numerator.
 - Vetoer
-    - Can set vetoer in VeloGovernor.
+    - Can set vetoer in CEDAGovernor.
     - Can veto proposals.
     - Can renounce vetoer role.
 
@@ -128,7 +128,7 @@ This is an exhaustive list of all admin permissions in  V2, sorted by the contra
     - Can set allowedManager in VotingEscrow.
     - Can activate or deactivate managed NFTs in VotingEscrow.
 - EpochGovernor
-    - Can execute one proposal per epoch to adjust the VELO emission rate after the tail emission rate has been reached in Minter.
+    - Can execute one proposal per epoch to adjust the CEDA emission rate after the tail emission rate has been reached in Minter.
 - EmergencyCouncil
     - Can set emergencyCouncil in Voter.
     - Can kill a gauge.
@@ -142,7 +142,7 @@ This is an exhaustive list of all admin permissions in  V2, sorted by the contra
     - Can set artProxy in VotingEscrow.
     - Can enable split functionality for a single address.
     - Can enable split functionality for all addresses.
-    - Can set proposalNumerator in VeloGovernor.
+    - Can set proposalNumerator in CEDAGovernor.
 - AllowedManager
     - Can create managed NFTs in VotingEscrow.
 
@@ -151,11 +151,11 @@ This is an exhaustive list of all admin permissions in  V2, sorted by the contra
 In addition to defined admin roles, various contracts within  protocol have unique permissions in calling other contracts.  These permissions are immutable.
 
 #### [Minter](https://optimistic.etherscan.io/address/0x6dc9E1C04eE59ed3531d73a72256C0da46D10982#code)
-- Can mint VELO and distribute to Voter for gauge emissions and RewardsDistributor for claimable rebases
+- Can mint CEDA and distribute to Voter for gauge emissions and RewardsDistributor for claimable rebases
     - `Minter.updatePeriod()`
 
 #### [Voter](https://optimistic.etherscan.io/address/0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C#code)
-- Can distribute VELO emissions to gauges
+- Can distribute CEDA emissions to gauges
     - `Voter.distribute()`
 - Can claim fees and rewards earned by Normal veNFTs
     - `Voter.claimFees()`
@@ -178,7 +178,7 @@ In addition to defined admin roles, various contracts within  protocol have uniq
     - `VotingEscrow.depositManaged()`
 - Can withdraw balances from `LockedManagedReward` and `FreeManagedReward`, and rewards earned from `LockedManagedReward`
     - `VotingEscrow.withdrawManaged()`
-- Can notify rewards to `LockedManagedReward`. These rewards are always in VELO.
+- Can notify rewards to `LockedManagedReward`. These rewards are always in CEDA.
     - `VotingEscrow.increaseAmount()`
     - `VotingEscrow.depositFor()`
 

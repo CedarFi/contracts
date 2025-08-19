@@ -13,24 +13,24 @@ contract EpochGovernorTest is BaseTest {
     event Comment(uint256 indexed proposalId, address indexed account, uint256 indexed tokenId, string comment);
 
     function _setUp() public override {
-        VELO.approve(address(escrow), 2 * TOKEN_1);
+        CEDA.approve(address(escrow), 2 * TOKEN_1);
         escrow.createLock(2 * TOKEN_1, MAXTIME); // 1
         vm.roll(block.number + 1);
 
         vm.startPrank(address(owner2));
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME); // 2
         vm.stopPrank();
         vm.roll(block.number + 1);
 
         vm.startPrank(address(owner3));
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME); // 3
         vm.stopPrank();
         vm.roll(block.number + 1);
 
         vm.startPrank(address(owner4));
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME); // 4
         vm.stopPrank();
         vm.roll(block.number + 1);
@@ -366,7 +366,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(tokenId, mTokenId);
 
@@ -383,7 +383,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(tokenId, mTokenId);
         uint256 tokenId2 = escrow.createLock(TOKEN_1 * 2, MAXTIME);
@@ -412,7 +412,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(tokenId, mTokenId);
         uint256 tokenId2 = escrow.createLock(TOKEN_1 * 2, MAXTIME);
@@ -421,7 +421,7 @@ contract EpochGovernorTest is BaseTest {
         LockedManagedReward lmr = LockedManagedReward(escrow.managedToLocked(mTokenId));
 
         // seed locked rewards, then skip to just before next epoch
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.increaseAmount(mTokenId, TOKEN_1);
         skipToNextEpoch(0);
         rewind(1); // trigger proposal snapshot exactly on epoch flip
@@ -433,7 +433,7 @@ contract EpochGovernorTest is BaseTest {
         // voting balances 0, but votes process on epochGovernor
         assertEq(escrow.balanceOfNFT(tokenId), 0);
         assertEq(escrow.getPastVotes(address(owner), tokenId, block.timestamp - 1), 0);
-        assertEq(lmr.earned(address(VELO), tokenId), TOKEN_1 / 3);
+        assertEq(lmr.earned(address(CEDA), tokenId), TOKEN_1 / 3);
         assertProposalVotes(pid, 0, TOKEN_1 + TOKEN_1 / 3, 0);
         assertEq(epochGovernor.hasVoted(pid, tokenId), true);
 
@@ -441,7 +441,7 @@ contract EpochGovernorTest is BaseTest {
         // voting balances 0, but votes process on epochGovernor
         assertEq(escrow.balanceOfNFT(tokenId2), 0);
         assertEq(escrow.getPastVotes(address(owner), tokenId2, block.timestamp - 1), 0);
-        assertEq(lmr.earned(address(VELO), tokenId2), (TOKEN_1 * 2) / 3);
+        assertEq(lmr.earned(address(CEDA), tokenId2), (TOKEN_1 * 2) / 3);
         assertProposalVotes(pid, 0, TOKEN_1 * 4, 0); // increment by TOKEN_1 * 2 + TOKEN_1 * 2 /3
         assertEq(epochGovernor.hasVoted(pid, tokenId2), true);
     }
@@ -451,7 +451,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(tokenId, mTokenId);
         uint256 tokenId2 = escrow.createLock(TOKEN_1 * 2, MAXTIME);
@@ -460,7 +460,7 @@ contract EpochGovernorTest is BaseTest {
         LockedManagedReward lmr = LockedManagedReward(escrow.managedToLocked(mTokenId));
 
         // seed locked rewards, then skip to just before next epoch
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.increaseAmount(mTokenId, TOKEN_1);
         skipToNextEpoch(0);
         rewind(1 + 1);
@@ -473,7 +473,7 @@ contract EpochGovernorTest is BaseTest {
         // voting balances 0, but votes process on epochGovernor
         assertEq(escrow.balanceOfNFT(tokenId), 0);
         assertEq(escrow.getPastVotes(address(owner), tokenId, block.timestamp - 1), 0);
-        assertEq(lmr.earned(address(VELO), tokenId), TOKEN_1 / 3);
+        assertEq(lmr.earned(address(CEDA), tokenId), TOKEN_1 / 3);
         assertProposalVotes(pid, 0, TOKEN_1 + TOKEN_1 / 3, 0);
         assertEq(epochGovernor.hasVoted(pid, tokenId), true);
 
@@ -481,7 +481,7 @@ contract EpochGovernorTest is BaseTest {
         // voting balances 0, but votes process on epochGovernor
         assertEq(escrow.balanceOfNFT(tokenId2), 0);
         assertEq(escrow.getPastVotes(address(owner), tokenId2, block.timestamp - 1), 0);
-        assertEq(lmr.earned(address(VELO), tokenId2), (TOKEN_1 * 2) / 3);
+        assertEq(lmr.earned(address(CEDA), tokenId2), (TOKEN_1 * 2) / 3);
         assertProposalVotes(pid, 0, TOKEN_1 * 4, 0); // increment by TOKEN_1 * 2 + TOKEN_1 * 2 / 3
         assertEq(epochGovernor.hasVoted(pid, tokenId2), true);
     }
@@ -491,7 +491,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 delegateTokenId = escrow.createLock(TOKEN_1, MAXTIME);
@@ -520,7 +520,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 delegateTokenId = escrow.createLock(TOKEN_1, MAXTIME);
@@ -555,7 +555,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 otherTokenId = escrow.createLock(TOKEN_1, MAXTIME);
@@ -579,14 +579,14 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 delegateTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         escrow.lockPermanent(delegateTokenId);
 
         // seed locked rewards, then skip to next epoch
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.increaseAmount(mTokenId, TOKEN_1);
 
         skipToNextEpoch(0);
@@ -612,14 +612,14 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 delegateTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         escrow.lockPermanent(delegateTokenId);
 
         // seed locked rewards, then skip to next epoch
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.increaseAmount(mTokenId, TOKEN_1);
 
         skipToNextEpoch(0);
@@ -650,7 +650,7 @@ contract EpochGovernorTest is BaseTest {
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
         uint256 mTokenId2 = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
 
@@ -680,7 +680,7 @@ contract EpochGovernorTest is BaseTest {
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
         uint256 mTokenId2 = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 delegateTokenId = escrow.createLock(TOKEN_1 * 2, MAXTIME);
@@ -721,7 +721,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 delegateTokenId = escrow.createLock(TOKEN_1 * 2, MAXTIME);
@@ -757,7 +757,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 delegateTokenId = escrow.createLock(TOKEN_1 * 2, MAXTIME);
@@ -795,7 +795,7 @@ contract EpochGovernorTest is BaseTest {
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
         uint256 mTokenId2 = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 depositTokenId2 = escrow.createLock(TOKEN_1 * 2, MAXTIME);
@@ -832,7 +832,7 @@ contract EpochGovernorTest is BaseTest {
         skip(1 hours);
 
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 depositTokenId = escrow.createLock(TOKEN_1, MAXTIME);
         voter.depositManaged(depositTokenId, mTokenId);
         uint256 depositTokenId2 = escrow.createLock(TOKEN_1 * 2, MAXTIME);
@@ -865,7 +865,7 @@ contract EpochGovernorTest is BaseTest {
 
         // owner3 owns less than required
         vm.startPrank(address(owner3));
-        VELO.approve(address(escrow), 1);
+        CEDA.approve(address(escrow), 1);
         uint256 tokenId = escrow.createLock(1, MAXTIME);
 
         vm.expectRevert("EpochGovernor: insufficient voting power");

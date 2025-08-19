@@ -29,7 +29,7 @@ contract VoterTest is BaseTest {
     // Reset is not constrained as epochs are accrue and are distributed once per epoch
     // poke() can be called by anyone anytime to "refresh" an outdated vote state
     function testCannotChangeVoteInSameEpoch() public {
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -50,7 +50,7 @@ contract VoterTest is BaseTest {
     }
 
     function testCannotResetUntilAfterDistributeWindow() public {
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -78,7 +78,7 @@ contract VoterTest is BaseTest {
     }
 
     function testCannotResetInSameEpoch() public {
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -98,7 +98,7 @@ contract VoterTest is BaseTest {
     }
 
     function testCannotPokeUntilAfterDistributeWindow() public {
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -126,7 +126,7 @@ contract VoterTest is BaseTest {
     }
 
     function testPoke() public {
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
         skipAndRoll(1 hours);
 
@@ -140,7 +140,7 @@ contract VoterTest is BaseTest {
 
     function testPokeAfterVote() public {
         skip(1 hours + 1);
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -209,7 +209,7 @@ contract VoterTest is BaseTest {
     function testVoteAfterResetInSameEpoch() public {
         skip(1 weeks / 2);
 
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
 
         // create a bribe
@@ -244,7 +244,7 @@ contract VoterTest is BaseTest {
 
     function testVote() public {
         skip(1 hours + 1);
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -274,7 +274,7 @@ contract VoterTest is BaseTest {
         assertEq(voter.poolVote(tokenId, 1), address(pool2));
 
         vm.startPrank(address(owner2));
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId2 = escrow.createLock(TOKEN_1, MAXTIME);
         vm.expectEmit(true, true, false, true, address(voter));
         emit Voted(address(owner2), address(pool), 2, 332410573062176670, 664821146124353340, block.timestamp);
@@ -296,7 +296,7 @@ contract VoterTest is BaseTest {
     }
 
     function testReset() public {
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         skipAndRoll(1 hours + 1);
 
@@ -311,11 +311,11 @@ contract VoterTest is BaseTest {
 
     function testResetAfterVote() public {
         skipAndRoll(1 hours + 1);
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
 
         vm.startPrank(address(owner2));
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId2 = escrow.createLock(TOKEN_1, MAXTIME);
         vm.stopPrank();
 
@@ -371,7 +371,7 @@ contract VoterTest is BaseTest {
 
     function testResetAfterVoteOnKilledGauge() public {
         skipAndRoll(1 hours + 1);
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -410,7 +410,7 @@ contract VoterTest is BaseTest {
     }
 
     function testCannotVoteUntilAnHourAfterEpochFlips() public {
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -438,7 +438,7 @@ contract VoterTest is BaseTest {
     function testCannotVoteAnHourBeforeEpochFlips() public {
         skipToNextEpoch(0);
 
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -471,7 +471,7 @@ contract VoterTest is BaseTest {
     function testCannotVoteForKilledGauge() public {
         skipToNextEpoch(60 minutes + 1);
 
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -503,7 +503,7 @@ contract VoterTest is BaseTest {
     function testCannotVoteForGaugeThatDoesNotExist() public {
         skipToNextEpoch(60 minutes + 1);
 
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
 
         // vote
@@ -683,7 +683,7 @@ contract VoterTest is BaseTest {
         gauge.deposit(POOL_1);
 
         // Create nft to vote for gauge
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
 
         skipToNextEpoch(2 hours); // past epochVoteStart
@@ -708,23 +708,23 @@ contract VoterTest is BaseTest {
         assertGt(rebase, 0);
         voter.updateFor(address(gauge));
 
-        uint256 reward = VELO.balanceOf(address(voter));
+        uint256 reward = CEDA.balanceOf(address(voter));
         assertGt(reward, 0);
         uint256 claimableBefore = voter.claimable(address(gauge));
         assertApproxEqRel(claimableBefore, reward, 1e6);
 
-        assertEq(VELO.balanceOf(address(minter)), 0);
+        assertEq(CEDA.balanceOf(address(minter)), 0);
 
         voter.killGauge(address(gauge));
         assertEq(voter.claimable(address(gauge)), 0);
         // Minimal remains from rounding
-        assertLt(VELO.balanceOf(address(voter)), 1e2); // check for dust
-        assertEq(VELO.balanceOf(address(minter)), claimableBefore);
+        assertLt(CEDA.balanceOf(address(voter)), 1e2); // check for dust
+        assertEq(CEDA.balanceOf(address(minter)), claimableBefore);
 
-        // zero-out rewards from minter so in a new rebase, new VELO is minted
+        // zero-out rewards from minter so in a new rebase, new CEDA is minted
         vm.prank(address(minter));
-        VELO.transfer(address(1), 14999999999999999999999999);
-        assertEq(VELO.balanceOf(address(minter)), 0);
+        CEDA.transfer(address(1), 14999999999999999999999999);
+        assertEq(CEDA.balanceOf(address(minter)), 0);
 
         // next epoch - votes/weights stay on gauge and no rewards get trapped in voter
         skipToNextEpoch(2 hours);
@@ -742,8 +742,8 @@ contract VoterTest is BaseTest {
         assertEq(voter.claimable(address(gauge)), 0);
 
         // Rewards are not trapped in voter (minus rounding from before)
-        assertLt(VELO.balanceOf(address(voter)), 1e2); // check for dust
-        assertGt(VELO.balanceOf(address(minter)), 0);
+        assertLt(CEDA.balanceOf(address(voter)), 1e2); // check for dust
+        assertGt(CEDA.balanceOf(address(minter)), 0);
     }
 
     function testCannotKillGaugeIfAlreadyKilled() public {
@@ -856,9 +856,9 @@ contract VoterTest is BaseTest {
         voter.distribute(0, voter.length());
 
         // killed gauge receives no contributions
-        assertEq(VELO.balanceOf(address(gauge)), 0);
+        assertEq(CEDA.balanceOf(address(gauge)), 0);
         // gauge2 receives distributions
-        assertEq(VELO.balanceOf(address(gauge2)), 7499999999999999999999999);
+        assertEq(CEDA.balanceOf(address(gauge2)), 7499999999999999999999999);
     }
 
     function testCannotNotifyRewardAmountIfNotMinter() public {
@@ -869,20 +869,20 @@ contract VoterTest is BaseTest {
     function testNotifyRewardAmount() public {
         _seedVoterWithVotingSupply();
 
-        deal(address(VELO), address(minter), TOKEN_1);
+        deal(address(CEDA), address(minter), TOKEN_1);
         vm.prank(address(minter));
-        VELO.approve(address(voter), TOKEN_1);
+        CEDA.approve(address(voter), TOKEN_1);
 
-        uint256 minterPre = VELO.balanceOf(address(minter));
-        uint256 voterPre = VELO.balanceOf(address(voter));
+        uint256 minterPre = CEDA.balanceOf(address(minter));
+        uint256 voterPre = CEDA.balanceOf(address(voter));
 
         vm.prank(address(minter));
         vm.expectEmit(true, false, false, true, address(voter));
-        emit NotifyReward(address(minter), address(VELO), TOKEN_1);
+        emit NotifyReward(address(minter), address(CEDA), TOKEN_1);
         voter.notifyRewardAmount(TOKEN_1);
 
-        uint256 minterPost = VELO.balanceOf(address(minter));
-        uint256 voterPost = VELO.balanceOf(address(voter));
+        uint256 minterPost = CEDA.balanceOf(address(minter));
+        uint256 voterPost = CEDA.balanceOf(address(voter));
 
         assertEq(voterPost - voterPre, TOKEN_1);
         assertEq(minterPre - minterPost, TOKEN_1);
@@ -891,7 +891,7 @@ contract VoterTest is BaseTest {
     function testCannotDepositManagedIfNotOwnerOrApproved() public {
         uint256 mTokenId = escrow.createManagedLockFor(address(owner2));
         escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         skipToNextEpoch(1 hours + 1);
 
@@ -901,7 +901,7 @@ contract VoterTest is BaseTest {
     }
 
     function testCannotDepositManagedWithInactiveManagedNft() public {
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
 
@@ -915,7 +915,7 @@ contract VoterTest is BaseTest {
     function testCannotDepositManagedAnHourBeforeEpochFlips() public {
         skipToNextEpoch(0);
 
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         uint256 mTokenId = escrow.createManagedLockFor(address(owner));
 
@@ -940,7 +940,7 @@ contract VoterTest is BaseTest {
     function testCannotWithdrawManagedIfDepositManagedInSameEpoch() public {
         uint256 mTokenId = escrow.createManagedLockFor(address(owner2));
         escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         skipAndRoll(1 hours + 1);
 
@@ -955,7 +955,7 @@ contract VoterTest is BaseTest {
     function testCannotWithdrawManagedIfNotOwnerOrApproved() public {
         uint256 mTokenId = escrow.createManagedLockFor(address(owner2));
         escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         skipAndRoll(1 hours + 1);
 
@@ -971,7 +971,7 @@ contract VoterTest is BaseTest {
     function testDepositManagedPokeWithoutExistingVote() public {
         uint256 mTokenId = escrow.createManagedLockFor(address(owner2));
         escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
 
         skipToNextEpoch(1 hours + 1);
@@ -987,7 +987,7 @@ contract VoterTest is BaseTest {
         uint256 mTokenId = escrow.createManagedLockFor(address(owner2));
 
         escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         uint256 tokenId2 = escrow.createLock(TOKEN_1, MAXTIME);
 
@@ -1014,7 +1014,7 @@ contract VoterTest is BaseTest {
     function testWithdrawManagedToReset() public {
         uint256 mTokenId = escrow.createManagedLockFor(address(owner2));
         escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
 
         skipToNextEpoch(1 hours + 1);
@@ -1042,7 +1042,7 @@ contract VoterTest is BaseTest {
     function testWithdrawManagedToPoke() public {
         uint256 mTokenId = escrow.createManagedLockFor(address(owner2));
         escrow.createManagedLockFor(address(owner));
-        VELO.approve(address(escrow), type(uint256).max);
+        CEDA.approve(address(escrow), type(uint256).max);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         uint256 tokenId2 = escrow.createLock(TOKEN_1, MAXTIME);
 
@@ -1074,7 +1074,7 @@ contract VoterTest is BaseTest {
 
     function _seedVoterWithVotingSupply() internal {
         skip(1 hours + 1);
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         uint256 tokenId = escrow.createLock(TOKEN_1, MAXTIME);
         skip(1);
 
