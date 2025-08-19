@@ -39,7 +39,7 @@
                 "tokenB": "0xc5b001DC33727F8F26880B184090D3E252470D45"
             }
         ],
-        "poolsVeloV2": [
+        "poolsCEDAV2": [
             {
                 "stable": true,
                 "tokenB": "0x46f21fDa29F1339e0aB543763FF683D399e393eC"

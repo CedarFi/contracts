@@ -123,7 +123,7 @@ abstract contract IGovernor is IERC165, IERC6372 {
      * - `params=erc721` might refer to a scheme where specific NFTs are delegated to vote.
      *
      * NOTE: The string can be decoded by the standard
-     * https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams[`URLSearchParams`]
+     * https://deCEDAper.mozilla.org/en-US/docs/Web/API/URLSearchParams[`URLSearchParams`]
      * JavaScript class.
      */
     // solhint-disable-next-line func-name-mixedcase

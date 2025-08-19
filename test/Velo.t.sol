@@ -3,11 +3,11 @@ pragma solidity 0.8.19;
 
 import "./BaseTest.sol";
 
-contract VeloTest is BaseTest {
-    Velo token;
+contract CEDATest is BaseTest {
+    CEDA token;
 
     function _setUp() public override {
-        token = new Velo();
+        token = new CEDA();
     }
 
     function testCannotSetMinterIfNotMinter() public {

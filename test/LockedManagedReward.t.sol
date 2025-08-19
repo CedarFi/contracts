@@ -11,14 +11,14 @@ contract LockedManagedRewardTest is BaseTest {
 
     function _setUp() public override {
         // ve
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
         vm.startPrank(address(owner2));
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
         vm.stopPrank();
         vm.startPrank(address(owner3));
-        VELO.approve(address(escrow), TOKEN_1);
+        CEDA.approve(address(escrow), TOKEN_1);
         escrow.createLock(TOKEN_1, MAXTIME);
         vm.stopPrank();
 
@@ -31,13 +31,13 @@ contract LockedManagedRewardTest is BaseTest {
     function testCannotNotifyRewardIfNotVotingEscrow() public {
         vm.prank(address(owner2));
         vm.expectRevert(IReward.NotVotingEscrow.selector);
-        lockedManagedReward.notifyRewardAmount(address(VELO), 0);
+        lockedManagedReward.notifyRewardAmount(address(CEDA), 0);
     }
 
     function testCannotNotifyRewardWithZeroAmount() public {
         vm.prank(address(escrow));
         vm.expectRevert(IReward.ZeroAmount.selector);
-        lockedManagedReward.notifyRewardAmount(address(VELO), 0);
+        lockedManagedReward.notifyRewardAmount(address(CEDA), 0);
     }
 
     function testCannotNotifyRewardAmountIfNotEscrowToken() public {
@@ -50,36 +50,36 @@ contract LockedManagedRewardTest is BaseTest {
     }
 
     function testNotifyRewardAmount() public {
-        deal(address(VELO), address(escrow), TOKEN_1 * 3);
+        deal(address(CEDA), address(escrow), TOKEN_1 * 3);
 
         vm.prank(address(escrow));
-        VELO.approve(address(lockedManagedReward), TOKEN_1);
-        uint256 pre = VELO.balanceOf(address(escrow));
+        CEDA.approve(address(lockedManagedReward), TOKEN_1);
+        uint256 pre = CEDA.balanceOf(address(escrow));
         vm.prank(address(escrow));
         vm.expectEmit(true, true, true, true, address(lockedManagedReward));
-        emit NotifyReward(address(escrow), address(VELO), 604800, TOKEN_1);
-        lockedManagedReward.notifyRewardAmount(address(VELO), TOKEN_1);
-        uint256 post = VELO.balanceOf(address(escrow));
+        emit NotifyReward(address(escrow), address(CEDA), 604800, TOKEN_1);
+        lockedManagedReward.notifyRewardAmount(address(CEDA), TOKEN_1);
+        uint256 post = CEDA.balanceOf(address(escrow));
 
-        assertEq(lockedManagedReward.isReward(address(VELO)), true);
-        assertEq(lockedManagedReward.tokenRewardsPerEpoch(address(VELO), 604800), TOKEN_1);
+        assertEq(lockedManagedReward.isReward(address(CEDA)), true);
+        assertEq(lockedManagedReward.tokenRewardsPerEpoch(address(CEDA), 604800), TOKEN_1);
         assertEq(pre - post, TOKEN_1);
-        assertEq(VELO.balanceOf(address(lockedManagedReward)), TOKEN_1);
+        assertEq(CEDA.balanceOf(address(lockedManagedReward)), TOKEN_1);
 
         skip(1 hours);
 
         vm.prank(address(escrow));
-        VELO.approve(address(lockedManagedReward), TOKEN_1 * 2);
-        pre = VELO.balanceOf(address(escrow));
+        CEDA.approve(address(lockedManagedReward), TOKEN_1 * 2);
+        pre = CEDA.balanceOf(address(escrow));
         vm.prank(address(escrow));
         vm.expectEmit(true, true, true, true, address(lockedManagedReward));
-        emit NotifyReward(address(escrow), address(VELO), 604800, TOKEN_1 * 2);
-        lockedManagedReward.notifyRewardAmount(address(VELO), TOKEN_1 * 2);
-        post = VELO.balanceOf(address(escrow));
+        emit NotifyReward(address(escrow), address(CEDA), 604800, TOKEN_1 * 2);
+        lockedManagedReward.notifyRewardAmount(address(CEDA), TOKEN_1 * 2);
+        post = CEDA.balanceOf(address(escrow));
 
-        assertEq(lockedManagedReward.tokenRewardsPerEpoch(address(VELO), 604800), TOKEN_1 * 3);
+        assertEq(lockedManagedReward.tokenRewardsPerEpoch(address(CEDA), 604800), TOKEN_1 * 3);
         assertEq(pre - post, TOKEN_1 * 2);
-        assertEq(VELO.balanceOf(address(lockedManagedReward)), TOKEN_1 * 3);
+        assertEq(CEDA.balanceOf(address(lockedManagedReward)), TOKEN_1 * 3);
     }
 
     function testCannotGetRewardIfNotSingleToken() public {
@@ -91,7 +91,7 @@ contract LockedManagedRewardTest is BaseTest {
         skipToNextEpoch(1);
 
         address[] memory rewards = new address[](2);
-        rewards[0] = address(VELO);
+        rewards[0] = address(CEDA);
         rewards[1] = address(WETH);
 
         vm.prank(address(escrow));
@@ -120,7 +120,7 @@ contract LockedManagedRewardTest is BaseTest {
         skipToNextEpoch(1);
 
         address[] memory rewards = new address[](1);
-        rewards[0] = address(VELO);
+        rewards[0] = address(CEDA);
 
         vm.prank(address(owner2));
         vm.expectRevert(IReward.NotVotingEscrow.selector);
@@ -143,9 +143,9 @@ contract LockedManagedRewardTest is BaseTest {
     }
 
     function _addLockedReward(uint256 _amount) internal {
-        deal(address(VELO), address(distributor), _amount);
+        deal(address(CEDA), address(distributor), _amount);
         vm.startPrank(address(distributor));
-        VELO.approve(address(escrow), _amount);
+        CEDA.approve(address(escrow), _amount);
         escrow.depositFor(mTokenId, _amount);
         vm.stopPrank();
     }

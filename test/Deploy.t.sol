@@ -27,7 +27,7 @@ contract TestDeploy is BaseTest {
         address tokenB;
     }
 
-    struct PoolVeloV2 {
+    struct PoolCEDAV2 {
         bool stable;
         address token;
     }
@@ -90,7 +90,7 @@ contract TestDeploy is BaseTest {
             address token = _tokens[i];
             assertTrue(deployV2.voter().isWhitelistedToken(token));
         }
-        assertTrue(deployV2.voter().isWhitelistedToken(address(deployV2.VELO())));
+        assertTrue(deployV2.voter().isWhitelistedToken(address(deployV2.CEDA())));
 
         assertTrue(address(deployV2.WETH()) == address(WETH));
 
@@ -110,10 +110,10 @@ contract TestDeploy is BaseTest {
         assertEq(deployV2.router().voter(), address(deployV2.voter()));
         assertEq(address(deployV2.router().weth()), address(WETH));
         assertEq(deployV2.distributor().minter(), address(deployV2.minter()));
-        assertEq(deployV2.VELO().minter(), address(deployV2.minter()));
+        assertEq(deployV2.CEDA().minter(), address(deployV2.minter()));
 
         assertEq(deployV2.voter().minter(), address(deployV2.minter()));
-        assertEq(address(deployV2.minter().velo()), address(deployV2.VELO()));
+        assertEq(address(deployV2.minter().CEDA()), address(deployV2.CEDA()));
         assertEq(address(deployV2.minter().voter()), address(deployV2.voter()));
         assertEq(address(deployV2.minter().ve()), address(deployV2.escrow()));
         assertEq(address(deployV2.minter().rewardsDistributor()), address(deployV2.distributor()));
@@ -131,7 +131,7 @@ contract TestDeploy is BaseTest {
 
         // DeployGaugesAndPoolsV2 checks
 
-        // Validate non-VELO pools and gauges
+        // Validate non-CEDA pools and gauges
         PoolV2[] memory poolsV2 = abi.decode(jsonConstants.parseRaw(".poolsV2"), (PoolV2[]));
         for (uint256 i = 0; i < poolsV2.length; i++) {
             PoolV2 memory p = poolsV2[i];
@@ -141,11 +141,11 @@ contract TestDeploy is BaseTest {
             assertTrue(gaugeAddr != address(0));
         }
 
-        // validate VELO pools and gauges
-        PoolVeloV2[] memory poolsVeloV2 = abi.decode(jsonConstants.parseRaw(".poolsVeloV2"), (PoolVeloV2[]));
-        for (uint256 i = 0; i < poolsVeloV2.length; i++) {
-            PoolVeloV2 memory p = poolsVeloV2[i];
-            address poolAddr = deployV2.factory().getPool(address(deployV2.VELO()), p.token, p.stable);
+        // validate CEDA pools and gauges
+        PoolCEDAV2[] memory poolsCEDAV2 = abi.decode(jsonConstants.parseRaw(".poolsCEDAV2"), (PoolCEDAV2[]));
+        for (uint256 i = 0; i < poolsCEDAV2.length; i++) {
+            PoolCEDAV2 memory p = poolsCEDAV2[i];
+            address poolAddr = deployV2.factory().getPool(address(deployV2.CEDA()), p.token, p.stable);
             assertTrue(poolAddr != address(0));
             address gaugeAddr = deployV2.voter().gauges(poolAddr);
             assertTrue(gaugeAddr != address(0));

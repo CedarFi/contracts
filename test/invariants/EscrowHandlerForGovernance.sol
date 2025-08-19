@@ -4,7 +4,7 @@ pragma solidity 0.8.19;
 import "forge-std/Test.sol";
 import {VotingEscrow} from "contracts/VotingEscrow.sol";
 import {Voter} from "contracts/Voter.sol";
-import {Velo} from "contracts/Velo.sol";
+import {CEDA} from "contracts/CEDA.sol";
 import {TestOwner} from "test/utils/TestOwner.sol";
 import {TimeStore} from "./TimeStore.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
@@ -14,7 +14,7 @@ contract EscrowHandlerForGovernance is Test {
 
     VotingEscrow public immutable escrow;
     Voter public immutable voter;
-    Velo public immutable VELO;
+    CEDA public immutable CEDA;
     TimeStore public immutable timeStore;
     address[] public actors;
     uint256 public numActors;
@@ -38,7 +38,7 @@ contract EscrowHandlerForGovernance is Test {
     constructor(VotingEscrow _escrow, TimeStore _timeStore, address[] memory owners) {
         escrow = _escrow;
         voter = Voter(escrow.voter());
-        VELO = Velo(escrow.token());
+        CEDA = CEDA(escrow.token());
         timeStore = _timeStore;
         actors = new address[](owners.length + 2);
 
@@ -89,8 +89,8 @@ contract EscrowHandlerForGovernance is Test {
         amount = bound(amount, 1, 10_000 ether);
         address managedOwner = actors[numActors - 2];
         vm.startPrank(managedOwner);
-        deal(address(VELO), managedOwner, amount, true);
-        VELO.approve(address(escrow), amount);
+        deal(address(CEDA), managedOwner, amount, true);
+        CEDA.approve(address(escrow), amount);
         escrow.increaseAmount(mTokenId, amount);
         vm.stopPrank();
     }
@@ -101,9 +101,9 @@ contract EscrowHandlerForGovernance is Test {
         uint256 actorIndexSeed,
         uint256 timeJumpSeed
     ) public increaseTimestamp(timeJumpSeed) useActorNormal(actorIndexSeed) {
-        uint256 balanceOf = VELO.balanceOf(currentActor);
+        uint256 balanceOf = CEDA.balanceOf(currentActor);
         amount = bound(amount, 1, balanceOf / 2);
-        VELO.approve(address(escrow), amount);
+        CEDA.approve(address(escrow), amount);
         escrow.increaseAmount(ownerToId[currentActor], amount);
     }
 
@@ -125,7 +125,7 @@ contract EscrowHandlerForGovernance is Test {
         uint256 tokenId;
         for (uint256 i = 0; i < 3; i++) {
             vm.startPrank(address(actors[i]));
-            VELO.approve(address(escrow), TOKEN_1 * (i + 1));
+            CEDA.approve(address(escrow), TOKEN_1 * (i + 1));
             tokenId = escrow.createLock(TOKEN_1, WEEK * (52 * (i + 1)));
             ownerToId[actors[i]] = tokenId;
             normalLocks.add(actors[i]);
@@ -135,7 +135,7 @@ contract EscrowHandlerForGovernance is Test {
 
         // actor4 = locked lock, will deposit into mveNFT below
         vm.startPrank(address(actors[3]));
-        VELO.approve(address(escrow), TOKEN_1 * 5);
+        CEDA.approve(address(escrow), TOKEN_1 * 5);
         tokenId = escrow.createLock(TOKEN_1 * 5, WEEK * (52 * 4));
         ownerToId[actors[3]] = tokenId;
         numActors++;
@@ -143,7 +143,7 @@ contract EscrowHandlerForGovernance is Test {
 
         // actor5 = permanent lock
         vm.startPrank(actors[4]);
-        VELO.approve(address(escrow), TOKEN_1 * 6);
+        CEDA.approve(address(escrow), TOKEN_1 * 6);
         tokenId = escrow.createLock(TOKEN_1 * 6, WEEK);
         escrow.lockPermanent(tokenId);
         permanentLocks.add(actors[4]);

@@ -4,7 +4,7 @@
 
 ## Definitions
 
-- VELO: The native token in the  ecosystem. It is emitted by the Minter and is an ERC-20 compliant token.
+- CEDA: The native token in the  ecosystem. It is emitted by the Minter and is an ERC-20 compliant token.
 - Epoch: An epoch is one week in length, beginning at Thursday midnight UTC time. After 4 years, the day of the week it resets on will shift. 
 - Pool: AMM constant-product implementation similar to Uniswap V2 liquidity pools.
 
@@ -64,20 +64,20 @@ Registry of pool, gauge, bribe and managed rewards factories. Contains a default
 
 ## Token
 
-### Velo
+### CEDA
 
 Standard ERC20 token. Minting permissions granted to Minter.
 
 ### VotingEscrow
 
-The VotingEscrow contracts allow users to escrow their VELO tokens in an veVELO NFT. 
+The VotingEscrow contracts allow users to escrow their CEDA tokens in an veCEDA NFT. 
 The (ERC-721 compliant) NFT has a balance which represents the voting weight of the
 escrowed tokens, which decays linearly over time. Tokens can be locked for a maximum
-of four years. veVELO NFT vote weights can be used to vote for pools, which in turn
+of four years. veCEDA NFT vote weights can be used to vote for pools, which in turn
 determines the proportion of weekly emissions that go to each pool. VotingEscrow's
 clock mode is timestamps (see EIP-6372). Metadata updates (EIP-4906) are also supported. 
 
-There are three states that veVELO NFTs can be in: `NORMAL`, `LOCKED`, `MANAGED`.
+There are three states that veCEDA NFTs can be in: `NORMAL`, `LOCKED`, `MANAGED`.
 `NORMAL` NFTs are the NFTs that users are familiar with. `Managed` NFTs are a new
 type of NFT (see below). When a user deposits a normal NFT into a managed NFT, it
 becomes a `LOCKED` NFT. `NORMAL` NFTs are not restricted in functionality whereas
@@ -86,21 +86,21 @@ limited functionality. Managed NFT deposits and withdrawals are handled by `Vote
 
 Normal NFTs can also be in a new state that is known as a permanent lock. While 
 permanently locked, normal NFTs will have voting power that will be equal to the
-amount of veVELO that was locked to create it. The NFT's voting power will also
+amount of veCEDA that was locked to create it. The NFT's voting power will also
 not decay. Permanent locks can be unlocked as long as you have not voted that epoch. 
 Managed NFTs are permanent locks by default.
 
 Standard Operations:
 All of these operations require ownership of the underlying NFT or tokens being escrowed. 
-- Can create a NFT by escrowing VELO tokens and "locking" them for a time period.
+- Can create a NFT by escrowing CEDA tokens and "locking" them for a time period.
 - Can do anything with the NFT as supported by the ERC-721 interface (requires normal or managed NFT).
 - Can merge one NFT into another (requires normal NFT for `from`, but can be normal permanent for `to`).
 - Can split a single NFT into two new NFTs (requires normal or normal permanent NFT).  The NFT to be split is burned.  
     - By permissioning split to an address, any normal NFTs owned by the address are able to be split.
     - Split is initially permissioned by address and can be toggled on/off (requires team).
     - In addition, there are split toggle on/off permissions protocol-wide (requires team)
-- Can withdraw escrowed VELO tokens once the NFT lock expires (requires normal NFT). 
-- Can add to an existing NFT position by escrowing additional VELO tokens (requires normal or normal permanent or managed NFT).
+- Can withdraw escrowed CEDA tokens once the NFT lock expires (requires normal NFT). 
+- Can add to an existing NFT position by escrowing additional CEDA tokens (requires normal or normal permanent or managed NFT).
 - Can increase the lock duration of an NFT (and thus increasing voting power, requires normal NFT).
 - Can permanent lock a NFT to lock its voting power at the maximum and prevent decay (requires normal NFT).
 - Can unlock a permanently locked NFT to allow its voting power to decay (requires normal permanent NFT).
@@ -134,9 +134,9 @@ with a vote conducted by `EpochGovernor`. See `EpochGovernor` for information on
 ## RewardsDistributor
 
 Standard Curve-fee distribution contract, modified for use with rebases. Rebases 
-are calculated based on the locked and unlocked VELO one second prior to epoch flip.
+are calculated based on the locked and unlocked CEDA one second prior to epoch flip.
 veNFTs will earn rebases proportionally based on their contribution to the total locked
-VELO. Rebase claims against expired veNFTs will be distributed as unlocked VELO to the 
+CEDA. Rebase claims against expired veNFTs will be distributed as unlocked CEDA to the 
 owner of the veNFT. 
 
 ## VeArtProxy
@@ -224,7 +224,7 @@ Managed rewards are rewards that accrue to users that deposited their voting pow
 
 ### LockedManagedReward
 
-Locked rewards are VELO token rewards that have been compounded into the managed NFT (usually rebases but can also include non-VELO rewards that have converted to VELO to be compounded into the NFT). This contract functions similar to `PoolFees`, as it separates "reward" VELO from the "locked" VotingEscrow VELO. These rewards are not distributed and are returned to `VotingEscrow` when a user withdraws their NFT from a managed NFT. 
+Locked rewards are CEDA token rewards that have been compounded into the managed NFT (usually rebases but can also include non-CEDA rewards that have converted to CEDA to be compounded into the NFT). This contract functions similar to `PoolFees`, as it separates "reward" CEDA from the "locked" VotingEscrow CEDA. These rewards are not distributed and are returned to `VotingEscrow` when a user withdraws their NFT from a managed NFT. 
 
 ### FreeManagedReward
 
@@ -233,7 +233,7 @@ Free rewards are rewards that have been distributed to users depositing into a m
 
 ## Governance
 
-### VeloGovernor
+### CEDAGovernor
 
 Lightly modified from OpenZeppelin's Governor contract. Enables governance by using 
 timestamp based voting power from VotingEscrow NFTs. Includes support for vetoing of 
