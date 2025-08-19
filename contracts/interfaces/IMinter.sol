@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IRCT} from "./IRCT.sol";
+import {ICEDA} from "./ICEDA.sol";
 import {IVoter} from "./IVoter.sol";
 import {IVotingEscrow} from "./IVotingEscrow.sol";
 import {IRewardsDistributor} from "./IRewardsDistributor.sol";
@@ -19,8 +19,8 @@ interface IMinter {
     event Nudge(uint256 indexed _period, uint256 _oldRate, uint256 _newRate);
     event AcceptTeam(address indexed _newTeam);
 
-    /// @notice Interface of IRCT.sol
-    function rct() external view returns (IRCT);
+    /// @notice Interface of ICEDA.sol
+    function ceda() external view returns (ICEDA);
 
     /// @notice Interface of Voter.sol
     function voter() external view returns (IVoter);

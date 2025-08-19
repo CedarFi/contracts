@@ -12,7 +12,7 @@ contract VeloTest is BaseTest {
 
     function testCannotSetMinterIfNotMinter() public {
         vm.prank(address(owner2));
-        vm.expectRevert(IRCT.NotMinter.selector);
+        vm.expectRevert(ICEDA.NotMinter.selector);
         token.setMinter(address(owner3));
     }
 
@@ -24,7 +24,7 @@ contract VeloTest is BaseTest {
 
     function testCannotMintIfNotMinter() public {
         vm.prank(address(owner2));
-        vm.expectRevert(IRCT.NotMinter.selector);
+        vm.expectRevert(ICEDA.NotMinter.selector);
         token.mint(address(owner2), TOKEN_1);
     }
 }

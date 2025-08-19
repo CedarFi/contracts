@@ -308,10 +308,10 @@
   },
   {
     "inputs": [],
-    "name": "rct",
+    "name": "CEDA",
     "outputs": [
       {
-        "internalType": "contract IRCT",
+        "internalType": "contract ICEDA",
         "name": "",
         "type": "address"
       }

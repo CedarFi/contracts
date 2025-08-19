@@ -11,7 +11,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ERC2771Context} from "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import {ReactorTimeLibrary} from "../libraries/ReactorTimeLibrary.sol";
+import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
 /// @title  V2 Gauge
 /// @author veldorome.finance, @figs999, @pegahcarter
@@ -213,7 +213,7 @@ contract Gauge is IGauge, ERC2771Context, ReentrancyGuard {
     function _notifyRewardAmount(address sender, uint256 _amount) internal {
         rewardPerTokenStored = rewardPerToken();
         uint256 timestamp = block.timestamp;
-        uint256 timeUntilNext = ReactorTimeLibrary.epochNext(timestamp) - timestamp;
+        uint256 timeUntilNext = TimeLibrary.epochNext(timestamp) - timestamp;
 
         if (timestamp >= periodFinish) {
             IERC20(rewardToken).safeTransferFrom(sender, address(this), _amount);
@@ -224,7 +224,7 @@ contract Gauge is IGauge, ERC2771Context, ReentrancyGuard {
             IERC20(rewardToken).safeTransferFrom(sender, address(this), _amount);
             rewardRate = (_amount + _leftover) / timeUntilNext;
         }
-        rewardRateByEpoch[ReactorTimeLibrary.epochStart(timestamp)] = rewardRate;
+        rewardRateByEpoch[TimeLibrary.epochStart(timestamp)] = rewardRate;
         if (rewardRate == 0) revert ZeroRewardRate();
 
         // Ensure the provided reward amount is not more than the balance in the contract.

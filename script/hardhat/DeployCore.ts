@@ -14,11 +14,11 @@ import {
   Minter,
   RewardsDistributor,
   Router,
-  RCT,
+  CEDA,
   Voter,
   VeArtProxy,
   VotingEscrow,
-  RCTForwarder,
+  CEDAForwarder,
 } from "../../artifacts/types";
 import Values from "../constants/values.json";
 
@@ -32,7 +32,7 @@ interface CoreOutput {
   minter: string;
   poolFactory: string;
   router: string;
-  RCT: string;
+  CEDA: string;
   voter: string;
   votingEscrow: string;
   votingRewardsFactory: string;
@@ -45,9 +45,9 @@ async function main() {
   const CONSTANTS = Values[networkId as unknown as keyof typeof Values];
   const whitelistTokens = CONSTANTS.whitelistTokens;
 
-  const RCT = await deploy<RCT>("RCT");
-  await RCT.mint(CONSTANTS.team, MINT_VALUE);
-  whitelistTokens.push(RCT.address);
+  const CEDA = await deploy<CEDA>("CEDA");
+  await CEDA.mint(CONSTANTS.team, MINT_VALUE);
+  whitelistTokens.push(CEDA.address);
   // ====== end _deploySetupBefore() ======
 
   // ====== start _coreSetup() ======
@@ -75,7 +75,7 @@ async function main() {
   );
   // ====== end deployFactories() ======
 
-  const forwarder = await deploy<RCTForwarder>("RCTForwarder");
+  const forwarder = await deploy<CEDAForwarder>("CEDAForwarder");
 
   const balanceLogicLibrary = await deployLibrary("BalanceLogicLibrary");
   const delegationLogicLibrary = await deployLibrary("DelegationLogicLibrary");
@@ -88,7 +88,7 @@ async function main() {
     "VotingEscrow",
     libraries,
     forwarder.address,
-    RCT.address,
+    CEDA.address,
     factoryRegistry.address
   );
 
@@ -120,7 +120,7 @@ async function main() {
 
   const minter = await deploy<Minter>("Minter", undefined, voter.address, escrow.address, distributor.address);
   await distributor.setMinter(minter.address);
-  await RCT.setMinter(minter.address);
+  await CEDA.setMinter(minter.address);
 
   await voter.initialize(whitelistTokens, minter.address);
   // ====== end _coreSetup() ======
@@ -151,7 +151,7 @@ async function main() {
     minter: minter.address,
     poolFactory: poolFactory.address,
     router: router.address,
-    RCT: RCT.address,
+    CEDA: CEDA.address,
     voter: voter.address,
     votingEscrow: escrow.address,
     votingRewardsFactory: votingRewardsFactory.address,

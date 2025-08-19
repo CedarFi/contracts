@@ -7,7 +7,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC2771Context} from "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import {ReactorTimeLibrary} from "../libraries/ReactorTimeLibrary.sol";
+import {TimeLibrary} from "../libraries/TimeLibrary.sol";
 
 abstract contract Reward is IReward, ERC2771Context, ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -121,8 +121,8 @@ abstract contract Reward is IReward, ERC2771Context, ReentrancyGuard {
 
         if (
             _nCheckPoints > 0 &&
-            ReactorTimeLibrary.epochStart(checkpoints[tokenId][_nCheckPoints - 1].timestamp) ==
-            ReactorTimeLibrary.epochStart(_timestamp)
+            TimeLibrary.epochStart(checkpoints[tokenId][_nCheckPoints - 1].timestamp) ==
+            TimeLibrary.epochStart(_timestamp)
         ) {
             checkpoints[tokenId][_nCheckPoints - 1] = Checkpoint(_timestamp, balance);
         } else {
@@ -137,8 +137,8 @@ abstract contract Reward is IReward, ERC2771Context, ReentrancyGuard {
 
         if (
             _nCheckPoints > 0 &&
-            ReactorTimeLibrary.epochStart(supplyCheckpoints[_nCheckPoints - 1].timestamp) ==
-            ReactorTimeLibrary.epochStart(_timestamp)
+            TimeLibrary.epochStart(supplyCheckpoints[_nCheckPoints - 1].timestamp) ==
+            TimeLibrary.epochStart(_timestamp)
         ) {
             supplyCheckpoints[_nCheckPoints - 1] = SupplyCheckpoint(_timestamp, totalSupply);
         } else {
@@ -160,15 +160,15 @@ abstract contract Reward is IReward, ERC2771Context, ReentrancyGuard {
 
         uint256 reward = 0;
         uint256 _supply = 1;
-        uint256 _currTs = ReactorTimeLibrary.epochStart(lastEarn[token][tokenId]); // take epoch last claimed in as starting point
+        uint256 _currTs = TimeLibrary.epochStart(lastEarn[token][tokenId]); // take epoch last claimed in as starting point
         uint256 _index = getPriorBalanceIndex(tokenId, _currTs);
         Checkpoint memory cp0 = checkpoints[tokenId][_index];
 
         // accounts for case where lastEarn is before first checkpoint
-        _currTs = Math.max(_currTs, ReactorTimeLibrary.epochStart(cp0.timestamp));
+        _currTs = Math.max(_currTs, TimeLibrary.epochStart(cp0.timestamp));
 
         // get epochs between current epoch and first checkpoint in same epoch as last claim
-        uint256 numEpochs = (ReactorTimeLibrary.epochStart(block.timestamp) - _currTs) / DURATION;
+        uint256 numEpochs = (TimeLibrary.epochStart(block.timestamp) - _currTs) / DURATION;
 
         if (numEpochs > 0) {
             for (uint256 i = 0; i < numEpochs; i++) {
@@ -237,7 +237,7 @@ abstract contract Reward is IReward, ERC2771Context, ReentrancyGuard {
         if (amount == 0) revert ZeroAmount();
         IERC20(token).safeTransferFrom(sender, address(this), amount);
 
-        uint256 epochStart = ReactorTimeLibrary.epochStart(block.timestamp);
+        uint256 epochStart = TimeLibrary.epochStart(block.timestamp);
         tokenRewardsPerEpoch[token][epochStart] += amount;
 
         emit NotifyReward(sender, token, epochStart, amount);

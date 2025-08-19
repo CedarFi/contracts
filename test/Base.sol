@@ -17,7 +17,7 @@ import {IGauge, Gauge} from "contracts/gauges/Gauge.sol";
 import {PoolFees} from "contracts/PoolFees.sol";
 import {RewardsDistributor, IRewardsDistributor} from "contracts/RewardsDistributor.sol";
 import {IRouter, Router} from "contracts/Router.sol";
-import {IRCT, Velo} from "contracts/Velo.sol";
+import {ICEDA, Velo} from "contracts/Velo.sol";
 import {IVoter, Voter} from "contracts/Voter.sol";
 import {VeArtProxy} from "contracts/VeArtProxy.sol";
 import {IVotingEscrow, VotingEscrow} from "contracts/VotingEscrow.sol";

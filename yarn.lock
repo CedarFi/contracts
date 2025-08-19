@@ -2087,7 +2087,7 @@ es-array-method-boxes-properly@^1.0.0:
 es-set-tostringtag@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/es-set-tostringtag/-/es-set-tostringtag-2.0.1.tgz#338d502f6f674301d710b80c8592de8a15f09cd8"
-  integrity sha512-g3OMbtlwY3QewlqAiMLI47KywjWZoEytKr8pf6iTC8uJq5bIAH52Z9pnQ8pVL6whrCto53JZDuUIsifGeLorTg==
+  integrity sha512-g3OMbtlwY3QewlqAiMLI47KywjWZoEytKr8pf6iTC8uJq5bIAH52Z9pnQ8pVL6whCEDAo53JZDuUIsifGeLorTg==
   dependencies:
     get-intrinsic "^1.1.3"
     has "^1.0.3"
@@ -2693,7 +2693,7 @@ getpass@^0.1.1:
 ghost-testrpc@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/ghost-testrpc/-/ghost-testrpc-0.0.2.tgz#c4de9557b1d1ae7b2d20bbe474a91378ca90ce92"
-  integrity sha512-i08dAEgJ2g8z5buJIrCTduwPIhih3DP+hOCTyyryikfV8T0bNvHnGXO67i0DD1H4GBDETTclPy9njZbfluQYrQ==
+  integrity sha512-i08dAEgJ2g8z5buJICEDAduwPIhih3DP+hOCTyyryikfV8T0bNvHnGXO67i0DD1H4GBDETTclPy9njZbfluQYrQ==
   dependencies:
     chalk "^2.4.2"
     node-emoji "^1.10.0"
