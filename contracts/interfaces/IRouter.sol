@@ -297,17 +297,12 @@ interface IRouter {
         uint256 deadline
     ) external returns (uint256[] memory amounts);
 
-    /// @notice Swap one token for another without slippage protection
-    /// @return amounts     Array of amounts to swap  per route
-    /// @param routes       Array of trade routes used in the swap
-    /// @param to           Recipient of the tokens received
-    /// @param deadline     Deadline to receive tokens
-    function UNSAFE_swapExactTokensForTokens(
-        uint256[] memory amounts,
-        Route[] calldata routes,
-        address to,
-        uint256 deadline
-    ) external returns (uint256[] memory);
+    // function UNSAFE_swapExactTokensForTokens(
+    //     uint256[] memory amounts,
+    //     Route[] calldata routes,
+    //     address to,
+    //     uint256 deadline
+    // ) external returns (uint256[] memory);
 
     // **** SWAP (supporting fee-on-transfer tokens) ****
 

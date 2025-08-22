@@ -13,12 +13,12 @@ import {
   Pool,
   Minter,
   RewardsDistributor,
-  Router,
   CEDA,
   Voter,
   VeArtProxy,
   VotingEscrow,
   CEDAForwarder,
+  RouterWithFee,
 } from "../../artifacts/types";
 import Values from "../constants/values.json";
 
@@ -32,7 +32,7 @@ interface CoreOutput {
   minter: string;
   poolFactory: string;
   router: string;
-  CEDA: string;
+  ceda: string;
   voter: string;
   votingEscrow: string;
   votingRewardsFactory: string;
@@ -41,13 +41,13 @@ interface CoreOutput {
 async function main() {
   // ====== start _deploySetupBefore() ======
   const networkId: number = network.config.chainId as number;
-  const MINT_VALUE = "500000000000000000000000000";
+  const MINT_VALUE = "1000000000000000000000000000";
   const CONSTANTS = Values[networkId as unknown as keyof typeof Values];
   const whitelistTokens = CONSTANTS.whitelistTokens;
 
-  const CEDA = await deploy<CEDA>("CEDA");
-  await CEDA.mint(CONSTANTS.team, MINT_VALUE);
-  whitelistTokens.push(CEDA.address);
+  const ceda = await deploy<CEDA>("CEDA");
+  await ceda.mint(CONSTANTS.team, MINT_VALUE);
+  whitelistTokens.push(ceda.address);
   // ====== end _deploySetupBefore() ======
 
   // ====== start _coreSetup() ======
@@ -88,7 +88,7 @@ async function main() {
     "VotingEscrow",
     libraries,
     forwarder.address,
-    CEDA.address,
+    ceda.address,
     factoryRegistry.address
   );
 
@@ -108,19 +108,22 @@ async function main() {
 
   await escrow.setVoterAndDistributor(voter.address, distributor.address);
 
-  const router = await deploy<Router>(
-    "Router",
-    undefined,
-    forwarder.address,
-    factoryRegistry.address,
-    poolFactory.address,
-    voter.address,
-    CONSTANTS.WETH
-  );
+  // const router = await deploy<RouterWithFee>(
+  //   "RouterWithFee",
+  //   undefined,
+  //   factoryRegistry.address,
+  //   poolFactory.address,
+  //   voter.address,
+  //   CONSTANTS.WETH,
+  //   CONSTANTS.team,
+  //   {
+  //     gasLimit: 900000,
+  //   }
+  // );
 
   const minter = await deploy<Minter>("Minter", undefined, voter.address, escrow.address, distributor.address);
   await distributor.setMinter(minter.address);
-  await CEDA.setMinter(minter.address);
+  await ceda.setMinter(minter.address);
 
   await voter.initialize(whitelistTokens, minter.address);
   // ====== end _coreSetup() ======
@@ -150,8 +153,8 @@ async function main() {
     managedRewardsFactory: managedRewardsFactory.address,
     minter: minter.address,
     poolFactory: poolFactory.address,
-    router: router.address,
-    CEDA: CEDA.address,
+    router: "",
+    ceda: ceda.address,
     voter: voter.address,
     votingEscrow: escrow.address,
     votingRewardsFactory: votingRewardsFactory.address,

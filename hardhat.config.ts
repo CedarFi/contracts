@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 // import * as tdly from "@tenderly/hardhat-tenderly";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-foundry";
+// import "@fluent.xyz/hardhat-plugin";
 
 dotenv.config();
 // tdly.setup({ automaticVerifications: true });
@@ -23,7 +24,15 @@ export default {
             gasPrice: "auto",
             gas: "auto",
             gasMultiplier: 1
-          }
+          },
+        fluentTestnet: {
+            url: "https://rpc.testnet.fluent.xyz/",
+            chainId: 20994,
+            accounts: [process.env.PRIVATE_KEY],
+            gasPrice: "auto",
+            gas: "auto",
+            gasMultiplier: 1
+        }
     },
     solidity: {
         version: "0.8.19",
@@ -48,5 +57,8 @@ export default {
     typechain: {
         outDir: "artifacts/types",
         target: "ethers-v5"
-    }
+    },
+    // fluent: {
+    //     paths: ["./contracts"]
+    // }
 };

@@ -61,5 +61,73 @@
                 "token": "0x4200000000000000000000000000000000000006"
             }
         ]
+      },
+      "20994": {
+        "allowedManager": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "feeManager": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "emergencyCouncil": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "team": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "vetoer": "0xb69DB7b7B3aD64d53126DCD1f4D5fBDaea4fF578",
+        "WETH": "0x3d38E57b5d23c3881AffB8BC0978d5E0bd96c1C6",
+        "whitelistTokens": [
+            "0xC8Ebbf08Cb2A87aB90cC8EeC34C721764b7755e9",
+            "0x3d38E57b5d23c3881AffB8BC0978d5E0bd96c1C6",
+            "0xF4BB891765361cB0FeC50Cf0a8aB0412d36A8aBD",
+            "0xa328392a0D6554cef40153556Cf15828Bc319B20",
+            "0xB1C23d28ddd6783eD27Ce98B227beA938A55b105",
+            "0x1c7F33e39aB7A855fd2544570e0c9B584f81064f",
+            "0xf56410f2365e97D585683270b9c90A312E9c38fD",
+            "0x4e1B2c561796951F76CEe2748b910a6d69ff985C",
+            "0xAB49269cBd555E2EcF01227d179724c76aC377d5"
+        ],
+        "poolsV2": [
+            {
+                "stable": true,
+                "tokenA": "0x3E29D3A9316dAB217754d13b28646B76607c5f04",
+                "tokenB": "0x6806411765Af15Bddd26f8f544A34cC40cb9838B"
+            },
+            {
+                "stable": false,
+                "tokenA": "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb",
+                "tokenB": "0xFdb794692724153d1488CcdBE0C56c252596735F"
+            },
+            {
+                "stable": false,
+                "tokenA": "0x340fE1D898ECCAad394e2ba0fC1F93d27c7b717A",
+                "tokenB": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"
+            },
+            {
+                "stable": true,
+                "tokenA": "0xc40F949F8a4e094D1b49a23ea9241D289B7b2819",
+                "tokenB": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"
+            },
+            {
+                "stable": true,
+                "tokenA": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+                "tokenB": "0xc5b001DC33727F8F26880B184090D3E252470D45"
+            }
+        ],
+        "poolsCEDAV2": [
+            {
+                "stable": true,
+                "tokenB": "0x46f21fDa29F1339e0aB543763FF683D399e393eC"
+            },
+            {
+                "stable": false,
+                "tokenA": "0x3417E54A51924C225330f8770514aD5560B9098D"
+            },
+            {
+                "stable": false,
+                "tokenB": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"
+            },
+            {
+                "stable": false,
+                "tokenB": "0x7aE97042a4A0eB4D1eB370C34BfEC71042a056B7"
+            },
+            {
+                "stable": false,
+                "token": "0x4200000000000000000000000000000000000006"
+            }
+        ]
       }
 }

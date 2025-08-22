@@ -12,10 +12,9 @@ import {IWETH} from "./interfaces/IWETH.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {ERC2771Context} from "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 
-contract Router is IRouter, ERC2771Context {
+contract Router is IRouter {
     using SafeERC20 for IERC20;
 
     /// @inheritdoc IRouter
@@ -40,12 +39,11 @@ contract Router is IRouter, ERC2771Context {
     }
 
     constructor(
-        address _forwarder,
         address _factoryRegistry,
         address _factory,
         address _voter,
         address _weth
-    ) ERC2771Context(_forwarder) {
+    ) {
         factoryRegistry = _factoryRegistry;
         defaultFactory = _factory;
         voter = _voter;
@@ -221,8 +219,8 @@ contract Router is IRouter, ERC2771Context {
             amountBMin
         );
         address pool = poolFor(tokenA, tokenB, stable, defaultFactory);
-        _safeTransferFrom(tokenA, _msgSender(), pool, amountA);
-        _safeTransferFrom(tokenB, _msgSender(), pool, amountB);
+        _safeTransferFrom(tokenA, msg.sender, pool, amountA);
+        _safeTransferFrom(tokenB, msg.sender, pool, amountB);
         liquidity = IPool(pool).mint(to);
     }
 
@@ -246,12 +244,12 @@ contract Router is IRouter, ERC2771Context {
             amountETHMin
         );
         address pool = poolFor(token, address(weth), stable, defaultFactory);
-        _safeTransferFrom(token, _msgSender(), pool, amountToken);
+        _safeTransferFrom(token, msg.sender, pool, amountToken);
         weth.deposit{value: amountETH}();
         assert(weth.transfer(pool, amountETH));
         liquidity = IPool(pool).mint(to);
         // refund dust eth, if any
-        if (msg.value > amountETH) _safeTransferETH(_msgSender(), msg.value - amountETH);
+        if (msg.value > amountETH) _safeTransferETH(msg.sender, msg.value - amountETH);
     }
 
     // **** REMOVE LIQUIDITY ****
@@ -268,7 +266,7 @@ contract Router is IRouter, ERC2771Context {
         uint256 deadline
     ) public ensure(deadline) returns (uint256 amountA, uint256 amountB) {
         address pool = poolFor(tokenA, tokenB, stable, defaultFactory);
-        IERC20(pool).safeTransferFrom(_msgSender(), pool, liquidity);
+        IERC20(pool).safeTransferFrom(msg.sender, pool, liquidity);
         (uint256 amount0, uint256 amount1) = IPool(pool).burn(to);
         (address token0, ) = sortTokens(tokenA, tokenB);
         (amountA, amountB) = tokenA == token0 ? (amount0, amount1) : (amount1, amount0);
@@ -348,27 +346,6 @@ contract Router is IRouter, ERC2771Context {
         }
     }
 
-    function getBestSwapRoutes(
-        address[] memory tokens0,
-        address[] memory tokens1,
-        uint256[] memory amountsIn,
-        address _factory
-    ) external view returns (Route[] memory routes) {
-        require(tokens0.length == tokens1.length && amountsIn.length == tokens0.length, "UNEVEN_L");
-        address factory = _factory != address(0) ? _factory : defaultFactory;
-        for (uint i; i < tokens0.length; i++) {
-            address stable = poolFor(tokens0[i], tokens1[i], true, factory);
-            address volatile = poolFor(tokens0[i], tokens1[i], false, factory);
-            uint256 stableAmountOut = IPool(stable).getAmountOut(amountsIn[i], tokens0[i]);
-            uint256 volatileAmountOut = IPool(volatile).getAmountOut(amountsIn[i], tokens0[i]);
-            bool isStableRoute = stableAmountOut >= volatileAmountOut;
-            routes[i].from = tokens0[i];
-            routes[i].to = tokens1[i];
-            routes[i].factory = factory;
-            routes[i].stable = isStableRoute;
-        }
-    }
-
     function swapExactTokensForTokens(
         uint256 amountIn,
         uint256 amountOutMin,
@@ -380,7 +357,7 @@ contract Router is IRouter, ERC2771Context {
         if (amounts[amounts.length - 1] < amountOutMin) revert InsufficientOutputAmount();
         _safeTransferFrom(
             routes[0].from,
-            _msgSender(),
+            msg.sender,
             poolFor(routes[0].from, routes[0].to, routes[0].stable, routes[0].factory),
             amounts[0]
         );
@@ -413,7 +390,7 @@ contract Router is IRouter, ERC2771Context {
         if (amounts[amounts.length - 1] < amountOutMin) revert InsufficientOutputAmount();
         _safeTransferFrom(
             routes[0].from,
-            _msgSender(),
+            msg.sender,
             poolFor(routes[0].from, routes[0].to, routes[0].stable, routes[0].factory),
             amounts[0]
         );
@@ -422,21 +399,21 @@ contract Router is IRouter, ERC2771Context {
         _safeTransferETH(to, amounts[amounts.length - 1]);
     }
 
-    function UNSAFE_swapExactTokensForTokens(
-        uint256[] memory amounts,
-        Route[] calldata routes,
-        address to,
-        uint256 deadline
-    ) external ensure(deadline) returns (uint256[] memory) {
-        _safeTransferFrom(
-            routes[0].from,
-            _msgSender(),
-            poolFor(routes[0].from, routes[0].to, routes[0].stable, routes[0].factory),
-            amounts[0]
-        );
-        _swap(amounts, routes, to);
-        return amounts;
-    }
+    // function UNSAFE_swapExactTokensForTokens(
+    //     uint256[] memory amounts,
+    //     Route[] calldata routes,
+    //     address to,
+    //     uint256 deadline
+    // ) external ensure(deadline) returns (uint256[] memory) {
+    //     _safeTransferFrom(
+    //         routes[0].from,
+    //         msg.sender,
+    //         poolFor(routes[0].from, routes[0].to, routes[0].stable, routes[0].factory),
+    //         amounts[0]
+    //     );
+    //     _swap(amounts, routes, to);
+    //     return amounts;
+    // }
 
     // **** SWAP (supporting fee-on-transfer tokens) ****
     /// @dev requires the initial amount to have already been sent to the first pool
@@ -473,7 +450,7 @@ contract Router is IRouter, ERC2771Context {
     ) external ensure(deadline) {
         _safeTransferFrom(
             routes[0].from,
-            _msgSender(),
+            msg.sender,
             poolFor(routes[0].from, routes[0].to, routes[0].stable, routes[0].factory),
             amountIn
         );
@@ -511,7 +488,7 @@ contract Router is IRouter, ERC2771Context {
         if (routes[routes.length - 1].to != address(weth)) revert InvalidPath();
         _safeTransferFrom(
             routes[0].from,
-            _msgSender(),
+            msg.sender,
             poolFor(routes[0].from, routes[0].to, routes[0].stable, routes[0].factory),
             amountIn
         );
@@ -542,7 +519,7 @@ contract Router is IRouter, ERC2771Context {
             weth.deposit{value: value}();
         } else {
             if (value != 0) revert InvalidTokenInForETHDeposit();
-            _safeTransferFrom(_tokenIn, _msgSender(), address(this), amountIn);
+            _safeTransferFrom(_tokenIn, msg.sender, address(this), amountIn);
         }
 
         _zapSwap(_tokenIn, amountInA, amountInB, zapInPool, routesA, routesB);
@@ -747,7 +724,7 @@ contract Router is IRouter, ERC2771Context {
     /// @dev Return residual assets from zapping.
     /// @param token token to return, put `ETHER` if you want Ether back.
     function _returnAssets(address token) internal {
-        address sender = _msgSender();
+        address sender = msg.sender;
         uint256 balance;
         if (token == ETHER) {
             balance = IERC20(weth).balanceOf(address(this));
