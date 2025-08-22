@@ -3,6 +3,7 @@ src = 'contracts'
 out = 'out'
 
 fs_permissions = [{ access = "read-write", path = "./"}]
+libs = ["node_modules", "lib"]
 
 [rpc_endpoints]
 goerli = "${GOERLI_RPC_URL}"

@@ -6,8 +6,9 @@
     "lib": "lib"
   },
   "devDependencies": {
+    "@fluent.xyz/hardhat-plugin": "^1.0.1",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
-    "@nomicfoundation/hardhat-foundry": "^1.0.1",
+    "@nomicfoundation/hardhat-foundry": "^1.2.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
@@ -41,6 +42,7 @@
     "build": "yarn clean && yarn compile",
     "deploy": "npx hardhat run script/hardhat/DeployCore.ts",
     "deploy:feeRouter": "npx hardhat run script/hardhat/DeployRouterWithFee.ts",
+    "getEther:feeRouter": "npx hardhat run script/hardhat/TestGetETHER.ts",
     "extract-abis": "ts-node script/ExtractABIs.ts",
     "deploy:callee": "npx hardhat run script/hardhat/DeployFeeCallee.ts",
     "set:callee": "npx hardhat run script/hardhat/DeployFeeCallee.ts",

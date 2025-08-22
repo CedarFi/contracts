@@ -137,8 +137,7 @@ abstract contract Reward is IReward, ERC2771Context, ReentrancyGuard {
 
         if (
             _nCheckPoints > 0 &&
-            TimeLibrary.epochStart(supplyCheckpoints[_nCheckPoints - 1].timestamp) ==
-            TimeLibrary.epochStart(_timestamp)
+            TimeLibrary.epochStart(supplyCheckpoints[_nCheckPoints - 1].timestamp) == TimeLibrary.epochStart(_timestamp)
         ) {
             supplyCheckpoints[_nCheckPoints - 1] = SupplyCheckpoint(_timestamp, totalSupply);
         } else {

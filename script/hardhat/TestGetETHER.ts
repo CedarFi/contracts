@@ -1,10 +1,8 @@
 import fs from "fs";
 import { network } from "hardhat";
 import { join } from "path";
-import Values from "../constants/values.json";
-import { deploy } from "./utils/helpers";
+import { getContractAt } from "./utils/helpers";
 import { RouterWithFee } from "../../artifacts/types";
-import { writeFile } from "fs/promises";
 
 interface CoreOutput {
   artProxy: string;
@@ -27,30 +25,12 @@ async function main() {
   const outputDirectory = "script/constants/output";
   const outputFile = join(process.cwd(), outputDirectory, `CoreOutput-${String(networkId)}.json`);
   // const calleeFile = join(process.cwd(), outputDirectory, `CalleeOutput-${String(networkId)}.txt`);
-  const CONSTANTS = Values[networkId as unknown as keyof typeof Values];
 
   const outputBuffer = fs.readFileSync(outputFile);
   const output: CoreOutput = JSON.parse(outputBuffer.toString());
-  // const calleeBuffer = fs.readFileSync(calleeFile);
-  // const callee = calleeBuffer.toString();
-
-  const router = await deploy<RouterWithFee>(
-    "RouterWithFee",
-    undefined,
-    output.factoryRegistry,
-    output.poolFactory,
-    output.voter,
-    CONSTANTS.WETH,
-    CONSTANTS.team
-  );
-
-  output.router = router.address;
-
-  try {
-    await writeFile(outputFile, JSON.stringify(output, null, 2));
-  } catch (error) {
-    console.error(`Error writing output file: ${error}`);
-  }
+  const router = await getContractAt<RouterWithFee>("RouterWithFee", output.router);
+  const ETHER = await router.ETHER();
+  console.log(ETHER);
 }
 
 main().catch((error) => {

@@ -14,19 +14,18 @@ contract RouterWithFee is Router, IPoolCallee {
     uint256 public fee = 100; //  1% as fee
 
     constructor(
-        address _forwarder,
         address _factoryRegistry,
         address _factory,
         address _voter,
         address _weth,
         address _feeRecipient
-    ) Router(_forwarder, _factoryRegistry, _factory, _voter, _weth) {
+    ) Router(_factoryRegistry, _factory, _voter, _weth) {
         feeRecipient = _feeRecipient;
         owner = msg.sender;
     }
 
     modifier onlyOwner() {
-        require(owner == msg.sender, "NO");
+        require(owner == msg.sender);
         _;
     }
 
